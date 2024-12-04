@@ -1,173 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flashcards</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #f4f4f9;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards with Flip and Pop-Up</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
 
-    .flashcard-container {
-      width: 400px;
-      height: 200px;
-      perspective: 1000px;
-    }
+        .card-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
 
-    .flashcard {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 0.5s;
-      cursor: pointer;
-    }
+        .card {
+            width: 150px;
+            height: 100px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
 
-    .flashcard.flip {
-      transform: rotateY(180deg);
-    }
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateY(0deg);
+            transition: transform 0.6s;
+        }
 
-    .flashcard .front,
-    .flashcard .back {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      padding: 20px;
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-      border-radius: 10px;
-    }
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
 
-    .flashcard .front {
-      background-color: #4CAF50;
-      color: white;
-    }
+        .card-front,
+        .card-back {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
 
-    .flashcard .back {
-      background-color: #f44336;
-      color: white;
-      transform: rotateY(180deg);
-    }
+        .card-front {
+            background-color: #007bff;
+            color: white;
+        }
 
-    .controls {
-      margin-top: 50px;
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-    }
+        .card-back {
+            background-color: #f4f4f9;
+            color: #333;
+            transform: rotateY(180deg);
+        }
 
-    button {
-      padding: 10px 15px;
-      font-size: 16px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+        .pop-up-image {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 200px;
+            height: 200px;
+            background-image: url('bilde1.png'); /* Reference the local file */
+            background-size: cover;
+            background-position: center;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease-in-out;
+            z-index: 1000;
+        }
 
-    button:hover {
-      opacity: 0.8;
-    }
-
-    .next {
-      background-color: #008CBA;
-      color: white;
-    }
-
-    .prev {
-      background-color: #555;
-      color: white;
-    }
-  </style>
+        .pop-up-image.active {
+            transform: translate(-50%, -50%) scale(1);
+        }
+    </style>
 </head>
 <body>
-  <div class="flashcard-container">
-    <div class="flashcard" onclick="flipCard()">
-      <div class="front" id="front">
-        Atmosfæren – luftlaget rundt oss
-      </div>
-      <div class="back" id="back">
-        Atmosfæren er laget av gasser som omgir jorden, inkludert nitrogen (78 %), oksygen (21 %), og små mengder andre gasser. Den beskytter oss mot skadelig stråling og holder temperaturen stabil.
-      </div>
+    <div class="card-container">
+        <div class="card" onclick="handleCardClick(this)">
+            <div class="card-inner">
+                <div class="card-front">Hva er pH-verdi?</div>
+                <div class="card-back">pH-verdi er et mål på surhet eller basiskhet i en løsning.</div>
+            </div>
+        </div>
+        <div class="card" onclick="handleCardClick(this)">
+            <div class="card-inner">
+                <div class="card-front">Hva er drivhuseffekten?</div>
+                <div class="card-back">Drivhuseffekten holder på varmen i jordens atmosfære ved hjelp av klimagasser.</div>
+            </div>
+        </div>
+        <div class="card" onclick="handleCardClick(this)">
+            <div class="card-inner">
+                <div class="card-front">Hva er karbonavtrykk?</div>
+                <div class="card-back">Karbonavtrykk er mengden CO₂-utslipp en person eller aktivitet forårsaker.</div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div class="controls">
-    <button class="prev" onclick="prevCard()">Forrige</button>
-    <button class="next" onclick="nextCard()">Neste</button>
-  </div>
+    <div class="pop-up-image" id="popUpImage"></div>
 
-  <script>
-    const flashcards = [
-      {
-        term: "Atmosfæren – luftlaget rundt oss",
-        definition: "Atmosfæren er laget av gasser som omgir jorden, inkludert nitrogen (78 %), oksygen (21 %), og små mengder andre gasser. Den beskytter oss mot skadelig stråling og holder temperaturen stabil."
-      },
-      {
-        term: "Drivhuseffekten",
-        definition: "Drivhuseffekten er prosessen der drivhusgasser som CO₂, metan og vanndamp fanger varme fra solen og holder jorden varm nok til liv."
-      },
-      {
-        term: "Klimagasser",
-        definition: "Klimagasser som CO₂, metan, lystgass og vanndamp bidrar til oppvarming ved å fange varme i atmosfæren."
-      },
-      {
-        term: "Forskjellen på vær og klima",
-        definition: "Vær er forhold vi opplever daglig, som regn og vind, mens klima er gjennomsnittet av vær over 30 år."
-      },
-      {
-        term: "Permafrost",
-        definition: "Permafrost er frossen jord som har vært under 0 °C i minst to år. Når den smelter, slipper den ut metan og CO₂."
-      },
-      {
-        term: "Karbonavtrykk",
-        definition: "Karbonavtrykk er mengden CO₂-utslipp forårsaket av en aktivitet, person eller produkt. Det kan reduseres ved å bruke fornybar energi og spise klimavennlig."
-      },
-      {term: "pH-verdi",
-        definition: "pH-verdi måler hvor sur eller basisk en løsning er."
-      },
-    ];
+    <script>
+        function handleCardClick(card) {
+            // Snu kortet
+            card.classList.toggle('flipped');
 
-    let currentCardIndex = 0;
+            // Vis pop-up bilde
+            const popUp = document.getElementById('popUpImage');
+            popUp.classList.add('active');
 
-    function updateCard() {
-      const front = document.getElementById("front");
-      const back = document.getElementById("back");
-
-      front.textContent = flashcards[currentCardIndex].term;
-      back.textContent = flashcards[currentCardIndex].definition;
-    }
-
-    function flipCard() {
-      const card = document.querySelector(".flashcard");
-      card.classList.toggle("flip");
-    }
-
-    function nextCard() {
-      currentCardIndex = (currentCardIndex + 1) % flashcards.length;
-      updateCard();
-      document.querySelector(".flashcard").classList.remove("flip");
-    }
-
-    function prevCard() {
-      currentCardIndex = (currentCardIndex - 1 + flashcards.length) % flashcards.length;
-      updateCard();
-      document.querySelector(".flashcard").classList.remove("flip");
-    }
-
-    // Initialize the first card
-    updateCard();
-  </script>
+            // Fjern pop-up etter 600ms
+            setTimeout(() => {
+                popUp.classList.remove('active');
+            }, 600);
+        }
+    </script>
 </body>
 </html>
