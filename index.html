@@ -1,174 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flashcards</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #f4f4f9;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards Navigator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
 
-    .flashcard-container {
-      width: 400px;
-      height: 200px;
-      perspective: 1000px;
-    }
+        .card-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 200px;
+            position: relative;
+        }
 
-    .flashcard {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 0.5s;
-      cursor: pointer;
-    }
+        .card {
+            width: 300px;
+            height: 200px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
 
-    .flashcard.flip {
-      transform: rotateY(180deg);
-    }
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateY(0deg);
+            transition: transform 0.6s;
+        }
 
-    .flashcard .front,
-    .flashcard .back {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      padding: 20px;
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-      border-radius: 10px;
-    }
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
 
-    .flashcard .front {
-      background-color: #4CAF50;
-      color: white;
-    }
+        .card-front,
+        .card-back {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
 
-    .flashcard .back {
-      background-color: #f44336;
-      color: white;
-      transform: rotateY(180deg);
-    }
+        .card-front {
+            background-color: #007bff;
+            color: white;
+        }
 
-    .controls {
-      margin-top: 50px;
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-    }
+        .card-back {
+            background-color: #f4f4f9;
+            color: #333;
+            transform: rotateY(180deg);
+            padding: 10px;
+            text-align: center;
+        }
 
-    button {
-      padding: 10px 15px;
-      font-size: 16px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+        .navigation-buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
 
-    button:hover {
-      opacity: 0.8;
-    }
+        .navigation-buttons button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
 
-    .next {
-      background-color: #008CBA;
-      color: white;
-    }
+        .navigation-buttons button:hover {
+            background-color: #0056b3;
+        }
 
-    .prev {
-      background-color: #555;
-      color: white;
-    }
-  </style>
+        .pop-up-image {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 200px;
+            height: 200px;
+            background-image: url('bilde.png'); /* Reference the local file */
+            background-size: cover;
+            background-position: center;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease-in-out;
+            z-index: 1000;
+        }
+
+        .pop-up-image.active {
+            transform: translate(-50%, -50%) scale(1);
+        }
+    </style>
 </head>
 <body>
-  <div class="flashcard-container">
-    <div class="flashcard" onclick="flipCard()">
-      <div class="front" id="front">
-        Atmosfæren – luftlaget rundt oss
-      </div>
-      <div class="back" id="back">
-        Atmosfæren er laget av gasser som omgir jorden, inkludert nitrogen (78 %), oksygen (21 %), og små mengder andre gasser. Den beskytter oss mot skadelig stråling og holder temperaturen stabil.
-      </div>
+    <div class="card-container" id="cardContainer">
+        <!-- Card content will be dynamically loaded here -->
     </div>
-  </div>
 
-  <div class="controls">
-    <button class="prev" onclick="prevCard()">Forrige</button>
-    <button class="next" onclick="nextCard()">Neste</button>
-  </div>
+    <div class="navigation-buttons">
+        <button onclick="prevCard()">Forrige</button>
+        <button onclick="nextCard()">Neste</button>
+    </div>
 
-  <script>
-    const flashcards = [
-      {
-        term: "Atmosfæren – luftlaget rundt oss",
-        definition: "Atmosfæren er laget av gasser som omgir jorden, inkludert nitrogen (78 %), oksygen (21 %), og små mengder andre gasser. Den beskytter oss mot skadelig stråling og holder temperaturen stabil."
-      },
-      {
-        term: "Drivhuseffekten",
-        definition: "Drivhuseffekten er prosessen der drivhusgasser som CO₂, metan og vanndamp fanger varme fra solen og holder jorden varm nok til liv."
-      },
-      {
-        term: "Klimagasser",
-        definition: "Klimagasser som CO₂, metan, lystgass og vanndamp bidrar til oppvarming ved å fange varme i atmosfæren."
-      },
-      {
-        term: "Forskjellen på vær og klima",
-        definition: "Vær er forhold vi opplever daglig, som regn og vind, mens klima er gjennomsnittet av vær over 30 år."
-      },
-      {
-        term: "Permafrost",
-        definition: "Permafrost er frossen jord som har vært under 0 °C i minst to år. Når den smelter, slipper den ut metan og CO₂."
-      },
-      {
-        term: "Karbonavtrykk",
-        definition: "Karbonavtrykk er mengden CO₂-utslipp forårsaket av en aktivitet, person eller produkt. Det kan reduseres ved å bruke fornybar energi og spise klimavennlig."
-      }
-        {
-        term: "pH-Verdi",
-        definition: "pH-Verdi er en måling på hvor sur eller basisk en løsning er."
-      }
-    ];
+    <div class="pop-up-image" id="popUpImage"></div>
 
-    let currentCardIndex = 0;
+    <script>
+        const cardsData = [
+            { front: "Hva er pH-verdi?", back: "pH-verdi er et mål på surhet eller basiskhet i en løsning." },
+            { front: "Hva er drivhuseffekten?", back: "Drivhuseffekten holder på varmen i jordens atmosfære ved hjelp av klimagasser." },
+            { front: "Hva er karbonavtrykk?", back: "Karbonavtrykk er mengden CO₂-utslipp en person eller aktivitet forårsaker." },
+            { front: "Hva er global oppvarming?", back: "Global oppvarming er en økning i jordens gjennomsnittstemperatur grunnet menneskelige aktiviteter." },
+            { front: "Hva er permafrost?", back: "Permafrost er bakken som forblir frossen hele året, ofte funnet i polare områder." },
+            { front: "Hva er klimaendringer?", back: "Klimaendringer refererer til langvarige endringer i værmønstre og gjennomsnittstemperaturer." }
+        ];
 
-    function updateCard() {
-      const front = document.getElementById("front");
-      const back = document.getElementById("back");
+        let currentCardIndex = 0;
 
-      front.textContent = flashcards[currentCardIndex].term;
-      back.textContent = flashcards[currentCardIndex].definition;
-    }
+        const cardContainer = document.getElementById('cardContainer');
+        const popUpImage = document.getElementById('popUpImage');
 
-    function flipCard() {
-      const card = document.querySelector(".flashcard");
-      card.classList.toggle("flip");
-    }
+        function loadCard(index) {
+            const cardData = cardsData[index];
+            cardContainer.innerHTML = `
+                <div class="card" onclick="handleCardClick(this)">
+                    <div class="card-inner">
+                        <div class="card-front">${cardData.front}</div>
+                        <div class="card-back">${cardData.back}</div>
+                    </div>
+                </div>
+            `;
+        }
 
-    function nextCard() {
-      currentCardIndex = (currentCardIndex + 1) % flashcards.length;
-      updateCard();
-      document.querySelector(".flashcard").classList.remove("flip");
-    }
+        function handleCardClick(card) {
+            // Flip the card
+            card.classList.toggle('flipped');
 
-    function prevCard() {
-      currentCardIndex = (currentCardIndex - 1 + flashcards.length) % flashcards.length;
-      updateCard();
-      document.querySelector(".flashcard").classList.remove("flip");
-    }
+            // Show the pop-up image
+            popUpImage.classList.add('active');
 
-    // Initialize the first card
-    updateCard();
-  </script>
+            // Hide the pop-up image after 600ms
+            setTimeout(() => {
+                popUpImage.classList.remove('active');
+            }, 600);
+        }
+
+        function nextCard() {
+            if (currentCardIndex < cardsData.length - 1) {
+                currentCardIndex++;
+                loadCard(currentCardIndex);
+            }
+        }
+
+        function prevCard() {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard(currentCardIndex);
+            }
+        }
+
+        // Load the first card initially
+        loadCard(currentCardIndex);
+    </script>
 </body>
 </html>
