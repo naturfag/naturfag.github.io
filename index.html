@@ -61,6 +61,10 @@
         .card-front {
             background-color: #007bff;
             color: white;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+            padding: 10px;
         }
 
         .card-back {
@@ -69,6 +73,7 @@
             transform: rotateY(180deg);
             padding: 10px;
             text-align: center;
+            font-size: 14px;
         }
 
         .navigation-buttons {
@@ -91,26 +96,6 @@
         .navigation-buttons button:hover {
             background-color: #0056b3;
         }
-
-        .pop-up-image {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            width: 200px;
-            height: 200px;
-            background-image: url('bilde.png'); /* Reference the local file */
-            background-size: cover;
-            background-position: center;
-            border-radius: 50%;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease-in-out;
-            z-index: 1000;
-        }
-
-        .pop-up-image.active {
-            transform: translate(-50%, -50%) scale(1);
-        }
     </style>
 </head>
 <body>
@@ -123,22 +108,25 @@
         <button onclick="nextCard()">Neste</button>
     </div>
 
-    <div class="pop-up-image" id="popUpImage"></div>
-
     <script>
         const cardsData = [
-            { front: "Hva er pH-verdi?", back: "pH-verdi er et mål på surhet eller basiskhet i en løsning." },
-            { front: "Hva er drivhuseffekten?", back: "Drivhuseffekten holder på varmen i jordens atmosfære ved hjelp av klimagasser." },
-            { front: "Hva er karbonavtrykk?", back: "Karbonavtrykk er mengden CO₂-utslipp en person eller aktivitet forårsaker." },
-            { front: "Hva er global oppvarming?", back: "Global oppvarming er en økning i jordens gjennomsnittstemperatur grunnet menneskelige aktiviteter." },
-            { front: "Hva er permafrost?", back: "Permafrost er bakken som forblir frossen hele året, ofte funnet i polare områder." },
-            { front: "Hva er klimaendringer?", back: "Klimaendringer refererer til langvarige endringer i værmønstre og gjennomsnittstemperaturer." }
+            { front: "Beskrive drivhuseffekten", back: "Sola varmer opp jorda med solstrålene sine, og drivhusgasser i atmosfæren holder varmen på jorden istedenfor å slippe den ut i verdensrommet." },
+            { front: "Forklare energibalanse", back: "Energibalanse betyr at kroppen får like mye energi fra mat og drikke som den bruker på å bevege seg." },
+            { front: "Karbonkretsløp", back: "Raskt karbonkretsløp sirkulerer mellom atmosfæren, planter og dyr. Langsomt karbonkretsløp lagres i jordskorpa gjennom geologiske prosesser." },
+            { front: "Karbonavtrykk", back: "Karbonavtrykk beskriver mengden karbondioksid som slippes ut i atmosfæren." },
+            { front: "Global oppvarming", back: "Skjer når for mye CO₂ og metan slippes ut fra fossilt brensel, fabrikker og avskoging." },
+            { front: "Klimaendringer", back: "Klimaendringer skyldes høye utslipp av CO₂ og CH₄, som fører til høyere havnivå og smelting av is." },
+            { front: "Fortidens klimaendringer", back: "Fortidens klimaendringer skjedde langsomt og var naturlige, mens dagens endringer er raskere og menneskeskapte." },
+            { front: "Klima og vær", back: "Klima er gjennomsnittlig vær over lang tid, mens vær er daglige forhold som regn og temperatur." },
+            { front: "Permafrost", back: "Permafrost er frossen jord hele året. Når den smelter, slippes lagrede gasser ut i atmosfæren." },
+            { front: "Atmosfæren", back: "Atmosfæren består av fire lag: troposfæren, stratosfæren, mesosfæren og termosfæren, med gasser som CO₂, metan og oksygen." },
+            { front: "Internasjonale tiltak", back: "Norge vil kutte utslipp med 55% innen 2030, ved å bytte til elbiler, redusere oljeleting og samarbeide internasjonalt." },
+            { front: "Positive og negative tilbakekoblinger", back: "Positive tilbakekoblinger forsterker effekten, mens negative motvirker den, som planter som tar opp mer CO₂ ved økte nivåer." }
         ];
 
         let currentCardIndex = 0;
 
         const cardContainer = document.getElementById('cardContainer');
-        const popUpImage = document.getElementById('popUpImage');
 
         function loadCard(index) {
             const cardData = cardsData[index];
@@ -153,16 +141,7 @@
         }
 
         function handleCardClick(card) {
-            // Flip the card
             card.classList.toggle('flipped');
-
-            // Show the pop-up image
-            popUpImage.classList.add('active');
-
-            // Hide the pop-up image after 600ms
-            setTimeout(() => {
-                popUpImage.classList.remove('active');
-            }, 600);
         }
 
         function nextCard() {
